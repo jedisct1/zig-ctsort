@@ -57,13 +57,13 @@ pub const native = struct {
             // Widen to (bits+1)-bit signed integer to prevent overflow, subtract,
             // then extract the sign bit to build the XOR mask.
             const bits = @bitSizeOf(T);
-            const WInt = std.meta.Int(.signed, bits + 1);
+            const WInt = @Int(.signed, bits + 1);
             const a_int: WInt = @intCast(a.*);
             const b_int: WInt = @intCast(b.*);
 
             // diff < 0 : the pair is out of order and needs swapping.
             const diff = if (order == .asc) b_int - a_int else a_int - b_int;
-            const UWInt = std.meta.Int(.unsigned, bits + 1);
+            const UWInt = @Int(.unsigned, bits + 1);
             const sign_bit: u1 = @truncate(@as(UWInt, @bitCast(diff)) >> @intCast(bits));
             var mask_word = @as(usize, 0) -% @as(usize, sign_bit);
             mask_word = asm volatile (""
@@ -115,7 +115,7 @@ pub const native = struct {
         // "useint" technique: transform float bits to sortable
         // integers, sort using the integer path, then transform back.
         if (@typeInfo(T) == .float) {
-            const SInt = std.meta.Int(.signed, @bitSizeOf(T));
+            const SInt = @Int(.signed, @bitSizeOf(T));
             const int_items: [*]SInt = @ptrCast(items.ptr);
             const int_slice = int_items[0..n];
             applyFloatSortKey(SInt, int_slice);
