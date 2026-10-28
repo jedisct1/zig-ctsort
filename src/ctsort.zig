@@ -35,7 +35,7 @@ pub const native = struct {
             const max_val: @Vector(vec_len, SInt) = @splat(std.math.maxInt(SInt));
             while (j + vec_len <= n) : (j += vec_len) {
                 const v: @Vector(vec_len, SInt) = items[j..][0..vec_len].*;
-                items[j..][0..vec_len].* = v ^ (v >> @splat(bits - 1) & max_val);
+                items[j..][0..vec_len].* = v ^ ((v >> @splat(bits - 1)) & max_val);
             }
         }
         while (j < n) : (j += 1) {
